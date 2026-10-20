@@ -1,0 +1,54 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# SQLite Database & Storage
+*.db
+*.sqlite3
+*.sqlite
+motomind.db
+motomind.db-journal
+motomind.db-wal
+motomind.db-shm
+
+# Testing & Cache
+.pytest_cache/
+.coverage
+htmlcov/
+.oxlintrc.json.cache
+
+# Environment Variables & Secrets
+.env
+*.env
+!.env.example
+
+# Node & Frontend
+node_modules/
+frontend/node_modules/
+frontend/dist/
+dist/
+dist-ssr/
+*.local
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# IDE & OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
