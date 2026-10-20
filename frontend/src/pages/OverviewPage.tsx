@@ -12,8 +12,7 @@ import {
   Info,
   Car,
   Bike,
-  CheckCircle2,
-  AlertCircle
+  CheckCircle2
 } from 'lucide-react';
 import { TelemetryData, HealthAssessment, RangeEstimate, ValidationRun } from '../types';
 import { api } from '../api/client';
@@ -35,15 +34,12 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({
   const defaultCapacity = is4W ? 64.0 : 3.2;
 
   const [rangeEstimate, setRangeEstimate] = useState<RangeEstimate | null>(null);
-  const [capacityKwh, setCapacityKwh] = useState<number>(defaultCapacity);
+  const [customCapacity, setCustomCapacity] = useState<number | null>(null);
   const [elevationM, setElevationM] = useState<number>(0);
   const [trafficFactor, setTrafficFactor] = useState<number>(1.0);
   const [latestOtaRun, setLatestOtaRun] = useState<ValidationRun | null>(null);
 
-  // Sync capacity when switching vehicle types
-  useEffect(() => {
-    setCapacityKwh(is4W ? 64.0 : 3.2);
-  }, [is4W]);
+  const capacityKwh = customCapacity ?? defaultCapacity;
 
   // Recalculate range whenever parameters or SOC changes
   useEffect(() => {
@@ -357,7 +353,7 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({
                 min="1.0"
                 max="150.0"
                 value={capacityKwh}
-                onChange={(e) => setCapacityKwh(parseFloat(e.target.value) || defaultCapacity)}
+                onChange={(e) => setCustomCapacity(parseFloat(e.target.value) || null)}
                 className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-cyan-500"
               />
             </div>

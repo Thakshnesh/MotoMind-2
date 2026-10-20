@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Wrench,
   Droplets,
@@ -6,13 +6,7 @@ import {
   CheckCircle,
   Plus,
   Battery,
-  Zap,
-  Calendar,
-  AlertCircle,
-  Sparkles,
-  Info,
-  Car,
-  Bike
+  Calendar
 } from 'lucide-react';
 import { ComponentRecord, ServiceRecord, WaterExposureRecord, SimulatorStatus } from '../types';
 import { api } from '../api/client';
@@ -54,17 +48,17 @@ export const VehicleServicePage: React.FC<VehicleServicePageProps> = ({
 
   const [statusMsg, setStatusMsg] = useState<string | null>(null);
 
-  const loadData = () => {
+  const loadData = useCallback(() => {
     const vid = filterByVehicle ? activeVehicleId : undefined;
     api.getComponents(vid).then(setComponents).catch(() => {});
     api.getServiceRecords(vid).then(setServices).catch(() => {});
     api.getWaterExposureRecords(vid).then(setExposures).catch(() => {});
     api.getBeforeAfterComparison(vid).then(res => setComparisons(res.comparisons || [])).catch(() => {});
-  };
+  }, [activeVehicleId, filterByVehicle]);
 
   useEffect(() => {
     loadData();
-  }, [activeVehicleId, filterByVehicle]);
+  }, [loadData]);
 
   const handleToggleServiceMode = async () => {
     const nextState = !simulator?.service_mode_active;
@@ -72,7 +66,7 @@ export const VehicleServicePage: React.FC<VehicleServicePageProps> = ({
       await api.toggleServiceMode(nextState, activeVehicleId);
       setStatusMsg(`Service Mode ${nextState ? 'ENGAGED' : 'DISENGAGED'} for ${activeVehicleId}`);
       setTimeout(() => setStatusMsg(null), 3000);
-    } catch (e) {}
+    } catch {}
   };
 
   const handleAddComponent = async (e: React.FormEvent) => {
@@ -94,7 +88,7 @@ export const VehicleServicePage: React.FC<VehicleServicePageProps> = ({
       setStatusMsg('New component registered and baseline recalibrated.');
       setTimeout(() => setStatusMsg(null), 4000);
       loadData();
-    } catch (e) {}
+    } catch {}
   };
 
   const handleResetBaseline = async (id: number) => {
@@ -103,7 +97,7 @@ export const VehicleServicePage: React.FC<VehicleServicePageProps> = ({
       setStatusMsg('Component baseline reset initiated.');
       setTimeout(() => setStatusMsg(null), 3000);
       loadData();
-    } catch (e) {}
+    } catch {}
   };
 
   const handleAddWaterExposure = async (e: React.FormEvent) => {
@@ -122,7 +116,7 @@ export const VehicleServicePage: React.FC<VehicleServicePageProps> = ({
       setStatusMsg('Water exposure event logged.');
       setTimeout(() => setStatusMsg(null), 3000);
       loadData();
-    } catch (e) {}
+    } catch {}
   };
 
   const handleAddService = async (e: React.FormEvent) => {
@@ -142,7 +136,7 @@ export const VehicleServicePage: React.FC<VehicleServicePageProps> = ({
       setStatusMsg('Service record saved.');
       setTimeout(() => setStatusMsg(null), 3000);
       loadData();
-    } catch (e) {}
+    } catch {}
   };
 
   return (
@@ -276,6 +270,21 @@ export const VehicleServicePage: React.FC<VehicleServicePageProps> = ({
               Log Service
             </button>
           </div>
+
+          {comparisons.length > 0 && (
+            <div className="mb-4 p-3 rounded-xl bg-emerald-950/40 border border-emerald-800/60 text-xs flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <CheckCircle className="w-4 h-4 text-emerald-400" />
+                <span className="text-emerald-300 font-semibold">Post-Service Restorative Delta:</span>
+                <span className="text-slate-300">
+                  {comparisons[0].service_type} ({comparisons[0].pre_health_score}% → {comparisons[0].post_health_score}%)
+                </span>
+              </div>
+              <span className="px-2 py-0.5 rounded text-[11px] font-bold bg-emerald-900/60 text-emerald-300 border border-emerald-700">
+                {comparisons[0].improvement_pct}
+              </span>
+            </div>
+          )}
 
           <div className="space-y-3">
             {services.map((s) => (

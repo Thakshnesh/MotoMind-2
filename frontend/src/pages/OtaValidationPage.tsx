@@ -1,19 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   ShieldCheck,
-  ShieldAlert,
   Play,
-  RotateCcw,
   Download,
-  AlertTriangle,
   CheckCircle,
-  XCircle,
-  Clock,
-  Layers,
-  ArrowRight,
   Info,
   Bug,
-  FileText,
   Car,
   Bike
 } from 'lucide-react';
@@ -27,10 +19,9 @@ interface OtaValidationPageProps {
 export const OtaValidationPage: React.FC<OtaValidationPageProps> = ({
   activeVehicleId = 'E2W-SCOOT-01'
 }) => {
-  const defaultIs4W = activeVehicleId.includes('4W');
-  const [selectedVehicleType, setSelectedVehicleType] = useState<string>(
-    defaultIs4W ? 'four_wheeler' : 'two_wheeler'
-  );
+  const [userSelectedType, setUserSelectedType] = useState<string | null>(null);
+  const selectedVehicleType = userSelectedType ?? (activeVehicleId.includes('4W') ? 'four_wheeler' : 'two_wheeler');
+  const setSelectedVehicleType = (type: string) => setUserSelectedType(type);
 
   const [versions, setVersions] = useState<SoftwareVersion[]>([]);
   const [selectedRefId, setSelectedRefId] = useState<number | null>(null);
@@ -40,12 +31,7 @@ export const OtaValidationPage: React.FC<OtaValidationPageProps> = ({
   const [pastRuns, setPastRuns] = useState<ValidationRun[]>([]);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
 
-  // Sync selected suite if activeVehicleId changes
-  useEffect(() => {
-    setSelectedVehicleType(activeVehicleId.includes('4W') ? 'four_wheeler' : 'two_wheeler');
-  }, [activeVehicleId]);
-
-  const loadData = () => {
+  const loadData = useCallback(() => {
     api.getSoftwareVersions(selectedVehicleType).then((v) => {
       setVersions(v);
       const ref = v.find((x) => x.is_active_reference) || v[0];
@@ -60,11 +46,11 @@ export const OtaValidationPage: React.FC<OtaValidationPageProps> = ({
         api.getValidationRun(runs[0].id).then(setActiveRun).catch(() => {});
       }
     }).catch(() => {});
-  };
+  }, [selectedVehicleType, activeRun]);
 
   useEffect(() => {
     loadData();
-  }, [selectedVehicleType]);
+  }, [loadData]);
 
   const handleStartCustomRun = async () => {
     if (!selectedRefId || !selectedCandId) return;
@@ -81,7 +67,7 @@ export const OtaValidationPage: React.FC<OtaValidationPageProps> = ({
       setStatusMessage(`Validation completed: ${summary.overall_result}`);
       setTimeout(() => setStatusMessage(null), 3000);
       api.getValidationRuns(selectedVehicleType).then(setPastRuns).catch(() => {});
-    } catch (e) {
+    } catch {
       setStatusMessage('Validation run failed.');
     } finally {
       setIsRunning(false);
@@ -100,7 +86,7 @@ export const OtaValidationPage: React.FC<OtaValidationPageProps> = ({
       setStatusMessage(`Demo Completed: Deliberate regression caught -> BLOCK for ${selectedVehicleType}`);
       setTimeout(() => setStatusMessage(null), 4000);
       api.getValidationRuns(selectedVehicleType).then(setPastRuns).catch(() => {});
-    } catch (e) {
+    } catch {
       setStatusMessage('Demo execution failed.');
     } finally {
       setIsRunning(false);
@@ -119,7 +105,7 @@ export const OtaValidationPage: React.FC<OtaValidationPageProps> = ({
       setStatusMessage(`Validation Completed: All 12 Safety Assertions Passed -> PASS for ${selectedVehicleType}`);
       setTimeout(() => setStatusMessage(null), 4000);
       api.getValidationRuns(selectedVehicleType).then(setPastRuns).catch(() => {});
-    } catch (e) {
+    } catch {
       setStatusMessage('Demo execution failed.');
     } finally {
       setIsRunning(false);
@@ -130,7 +116,7 @@ export const OtaValidationPage: React.FC<OtaValidationPageProps> = ({
     try {
       const run = await api.getValidationRun(id);
       setActiveRun(run);
-    } catch (e) {}
+    } catch {}
   };
 
   const isCurrent4W = selectedVehicleType === 'four_wheeler';

@@ -1,13 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
-  Cpu,
   RefreshCw,
   AlertOctagon,
   CheckCircle,
-  HelpCircle,
-  TrendingUp,
   Brain,
-  ShieldCheck,
   Info,
   Car,
   Bike
@@ -35,14 +31,14 @@ export const AiIntelligencePage: React.FC<AiIntelligencePageProps> = ({
   const [trainMessage, setTrainMessage] = useState<string | null>(null);
   const [sampleCount, setSampleCount] = useState<number>(600);
 
-  const fetchStatusAndEvents = () => {
+  const fetchStatusAndEvents = useCallback(() => {
     api.getModelStatus(vehicleType, activeVehicleId).then(setModelStatus).catch(() => {});
     api.getAnomalyEvents(activeVehicleId).then(setEvents).catch(() => {});
-  };
+  }, [vehicleType, activeVehicleId]);
 
   useEffect(() => {
     fetchStatusAndEvents();
-  }, [activeVehicleId, vehicleType]);
+  }, [fetchStatusAndEvents]);
 
   const handleTrainBaseline = async () => {
     setTraining(true);
@@ -51,7 +47,7 @@ export const AiIntelligencePage: React.FC<AiIntelligencePageProps> = ({
       const res = await api.trainModel(vehicleType, sampleCount, 0.03);
       setTrainMessage(`Model baseline for ${is4W ? 'Four-Wheeler' : 'Two-Wheeler'} successfully trained with ${res.training_sample_count} samples. Filtered ${res.contaminated_samples_filtered} edge/fault samples.`);
       fetchStatusAndEvents();
-    } catch (e) {
+    } catch {
       setTrainMessage('Model training failed.');
     } finally {
       setTraining(false);
@@ -62,7 +58,7 @@ export const AiIntelligencePage: React.FC<AiIntelligencePageProps> = ({
     try {
       await api.acknowledgeEvent(id);
       fetchStatusAndEvents();
-    } catch (e) {}
+    } catch {}
   };
 
   const currentScore = health?.anomaly_score ?? 0.05;

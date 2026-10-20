@@ -94,13 +94,13 @@ export const App: React.FC = () => {
             }
           }
           if (data.health) setHealth(data.health);
-        } catch (e) {}
+        } catch {}
       };
 
       ws.onerror = () => {
         // Fallback to polling
       };
-    } catch (e) {}
+    } catch {}
 
     // Backup polling timer every 2 seconds
     const interval = setInterval(() => fetchAllData(activeVehicleId), 2000);
@@ -125,7 +125,7 @@ export const App: React.FC = () => {
           setTelemetry(hist[hist.length - 1]);
         }
       }).catch(() => {});
-    } catch (e) {}
+    } catch {}
   };
 
   const handleStartSimulation = async () => {

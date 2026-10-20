@@ -1,5 +1,12 @@
 # MotoMind — Self-Learning EV Health Intelligence System
 
+[![CI](https://github.com/Thakshnesh/MotoMind-2/actions/workflows/ci.yml/badge.svg)](https://github.com/Thakshnesh/MotoMind-2/actions/workflows/ci.yml)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.110+-009688.svg?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
+[![React](https://img.shields.io/badge/React-19.0-61DAFB.svg?logo=react&logoColor=black)](https://react.dev)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-3178C6.svg?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
+[![Python](https://img.shields.io/badge/Python-3.11+-3776AB.svg?logo=python&logoColor=white)](https://www.python.org)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 **MotoMind** is an end-to-end, modular software platform supporting both **Electric Two-Wheelers (E2W)** (e.g. 52V commuter scooter) and **Electric Four-Wheelers (E4W)** (e.g. 400V dual-motor sedan). It features **EV Vehicle Health Monitoring**, **Self-Learning AI Anomaly Detection**, and **Virtual OTA Software Update Validation**.
 
 Built with a **FastAPI (Python)** backend, **scikit-learn** Isolation Forest machine learning, **SQLite/SQLAlchemy** persistence, and a modern **React + TypeScript + Vite + Tailwind CSS** frontend.

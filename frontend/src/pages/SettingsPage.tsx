@@ -1,13 +1,7 @@
 import React, { useState } from 'react';
 import {
-  Settings,
   Sliders,
-  Download,
-  Shield,
-  Radio,
   FileSpreadsheet,
-  AlertCircle,
-  CheckCircle,
   Database,
   Info
 } from 'lucide-react';
@@ -17,7 +11,6 @@ export const SettingsPage: React.FC = () => {
   const [critBattTemp, setCritBattTemp] = useState<number>(55.0);
   const [maxMotorTemp, setMaxMotorTemp] = useState<number>(85.0);
   const [maxCurrent, setMaxCurrent] = useState<number>(65.0);
-  const [simInterval, setSimInterval] = useState<number>(1.0);
   const [saveMsg, setSaveMsg] = useState<string | null>(null);
 
   const handleSaveConfig = (e: React.FormEvent) => {

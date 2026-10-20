@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, AlertTriangle, AlertCircle, CheckCircle, Info } from 'lucide-react';
+import { X, AlertTriangle, AlertCircle, CheckCircle } from 'lucide-react';
 import { AnomalyEvent } from '../types';
 
 interface NotificationDrawerProps {

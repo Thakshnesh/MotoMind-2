@@ -72,7 +72,7 @@ export const LiveMonitoringPage: React.FC<LiveMonitoringPageProps> = ({
       await api.injectFault(selectedFault, faultDuration, activeVehicleId);
       setMessage(`Injected fault: ${selectedFault} for ${faultDuration}s`);
       setTimeout(() => setMessage(null), 4000);
-    } catch (e) {
+    } catch {
       setMessage('Failed to inject fault.');
     } finally {
       setInjecting(false);
@@ -84,7 +84,7 @@ export const LiveMonitoringPage: React.FC<LiveMonitoringPageProps> = ({
       await api.clearFault(activeVehicleId);
       setMessage('Active faults cleared.');
       setTimeout(() => setMessage(null), 3000);
-    } catch (e) {}
+    } catch {}
   };
 
   // Dynamic axis domains depending on vehicle architecture
