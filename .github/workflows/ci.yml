@@ -24,6 +24,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Initialize and Seed SQLite Database
+        run: |
+          python backend/scripts/seed_db.py
+
       - name: Run Backend Tests
         run: |
           pytest
